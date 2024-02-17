@@ -76,6 +76,10 @@ public sealed class ProjectionBuilder : IProjectionBuilder
         foreach(var derivedMap in polymorphicMaps)
         {
             var sourceType = derivedMap.SourceType;
+            if (!request.SourceType.IsAssignableFrom(sourceType))
+            {
+                continue;
+            }
             var derivedRequest = request.InnerRequest(sourceType, derivedMap.DestinationType);
             var derivedProjection = CreateProjectionCore(derivedRequest, letPropertyMaps, derivedMap, Convert(source, sourceType));
             projection = Condition(TypeIs(source, sourceType), derivedProjection, projection, projection.Type);
